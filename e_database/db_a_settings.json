@@ -1,0 +1,21 @@
+{
+    "settings": [
+        {
+            "binance_api": "YOUR_TEST_KEY_OR_BINANCE_KEY",
+            "binance_secret": "YOUR_TEST_SECRET_OR_BINANCE_SECRET",
+            "telegram_bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+            "telegram_user_id": "YOUR_TELEGRAM_USER_ID",
+            "webhook_ip": "127.0.0.1",
+            "webhook_port": "5001",
+            "webhook_domain": "YOUR_DOMAIN",
+            "alert_key": "CREATE_BOT_KEY_EXAMPLE=bot24_3M1RMHM7",
+            "alert_long_open": "{\"symbol\": \"{{ticker}}\", \"alert\": \"long_open\",  \"price\": \"{{close}}\", \"key\": \"CREATE_BOT_KEY_EXAMPLE=bot24_3M1RMHM7\"}",
+            "alert_long_close": "{\"symbol\": \"{{ticker}}\", \"alert\": \"long_close\", \"price\": \"{{close}}\", \"key\": \"CREATE_BOT_KEY_EXAMPLE=bot24_3M1RMHM7\"}",
+            "alert_short_open": "{\"symbol\": \"{{ticker}}\", \"alert\": \"short_open\", \"price\": \"{{close}}\", \"key\": \"CREATE_BOT_KEY_EXAMPLE=bot24_3M1RMHM7\"}",
+            "alert_short_close": "{\"symbol\": \"{{ticker}}\", \"alert\": \"short_close\", \"price\": \"{{close}}\", \"key\": \"CREATE_BOT_KEY_EXAMPLE=bot24_3M1RMHM7\"}",
+            "order_balance": "100",
+            "order_leverage": "2",
+            "margin_type": "isolated"
+        }
+    ]
+}

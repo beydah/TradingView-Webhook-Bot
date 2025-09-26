@@ -1,0 +1,33 @@
+//#region ===== INFO ===================================================================================================
+
+// Webhook Test Script for TradingView
+// This script creates test alerts for webhook integration with your trading bot
+// It will generate alerts for long/short open/close positions on the current bar
+// This Pine Script® code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Developed by Ilkay Beydah Saglam https://beydahsaglam.com
+
+//@version=6
+indicator(
+     "🔥 Webhook Test 🔥​", 
+      overlay          = true, 
+      max_labels_count = 100, 
+      calc_bars_count  = 100, 
+      dynamic_requests = true
+      )
+
+//#endregion
+//#region ===== TEST ===================================================================================================
+
+// Alert Conditions - These will trigger webhook calls to your bot
+// Each alert sends a JSON payload with symbol, alert type, price, and API key
+// The webhook URL and authentication are configured in the TradingView alert settings
+// Test each alert type individually to verify proper integration with your trading bot
+// Replace 'YOUR_BOT_HOOK_KEY' with your actual API key before using
+
+bool test = barstate.islast
+alertcondition(test, title='Long Open', message='{"symbol": "{{ticker}}", "alert": "long_open", "price": "{{close}}", "key": "YOUR_BOT_HOOK_KEY"}')
+alertcondition(test, title='Long Close', message='{"symbol": "{{ticker}}", "alert": "long_close", "price": "{{close}}", "key": "YOUR_BOT_HOOK_KEY"}')
+alertcondition(test, title='Short Open', message='{"symbol": "{{ticker}}", "alert": "short_open", "price": "{{close}}", "key": "YOUR_BOT_HOOK_KEY"}')
+alertcondition(test, title='Short Close', message='{"symbol": "{{ticker}}", "alert": "short_close", "price": "{{close}}", "key": "YOUR_BOT_HOOK_KEY"}')
+
+//#endregion
