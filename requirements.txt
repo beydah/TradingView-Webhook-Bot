@@ -16,3 +16,8 @@ textual==0.79.1
 Flask==3.0.0
 waitress==3.0.0
 cryptography>=41.0.0
+
+# Settings
+pydantic-settings
+python-dotenv
+SQLAlchemy
