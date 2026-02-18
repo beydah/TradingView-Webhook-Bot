@@ -177,18 +177,42 @@ def handle_command(user_id: str, user_name: str, cmd: str) -> dict:
 
         elif cmd_key == "/getalert":
             try:
-                alerts = alerts_model.F_Get_Alerts().get('alerts', []) # Legacy call
-                if not alerts:
-                    msg = "No active alerts."
-                else:
-                    multi_msgs = ["Alerts:"]
-                    for a in alerts:
-                        multi_msgs.append(f"{a.get('datetime')} | {a.get('symbol')} {a.get('type')} | Price: {a.get('price')}")
-                    return {"buttons": buttons, "multi": multi_msgs}
+                db = SessionLocal()
+                try:
+                    alerts = crud.get_pending_alerts(db) # or get all? legacy was all active? "que" defaults to false? 
+                    # Legacy: F_Get_Alerts().get('alerts') -> returns all in file.
+                    # We might want to filter recent ones or just pending?
+                    # Let's show last 10 for now or pending.
+                    # "No active alerts found" implies pending?
+                    # But the legacy code listed all...
+                    # Let's fetch last 20 alerts
+                    raw_alerts = db.query(crud.Alert).order_by(crud.Alert.datetime.desc()).limit(20).all()
+                    
+                    if not raw_alerts:
+                        msg = "No alerts found."
+                    else:
+                        multi_msgs = ["Alerts (Last 20):"]
+                        for a in raw_alerts:
+                            status = "Waiting" if not a.is_processed else "Processed"
+                            multi_msgs.append(f"{a.datetime.strftime('%Y-%m-%d %H:%M')} | {a.symbol} {a.type} | {a.price} | {status}")
+                        return {"buttons": buttons, "multi": multi_msgs}
+                finally:
+                    db.close()
             except Exception:
                 msg = "Error reading alerts."
 
         elif cmd_key == "/getpos":
+            # Note: Binance Service gets ACTUAL positions from API.
+            # DB serves as a log/history.
+            # The command /getpos usually wants REAL positions.
+            # So we KEEP binance_service.get_orders() which calls API.
+            # But the legacy code used SR_Binance.F_Get_Orders() which is API.
+            # So NO CHANGE needed for /getpos if it calls binance_service.
+            
+            # Wait, let's verify if binance_service calls API or DB.
+            # checked binance_service: it calls client.futures_position_information(). Correct.
+            pass # No change needed.
+            
             positions = binance_service.get_orders()
             if not positions:
                 msg = "No open positions."
@@ -231,9 +255,30 @@ def handle_command(user_id: str, user_name: str, cmd: str) -> dict:
              return {"message": "Enter symbol (e.g. BTCUSDT):", "buttons": []}
              
         elif cmd_key == "/getlog":
-             # Log reading implementation
-             # For now, just say look at the file
-             msg = "Logs are stored in logs/ directory."
+            try:
+                # We need to create a text file with logs to send to user
+                db = SessionLocal()
+                try:
+                    logs = crud.get_logs(db, limit=100)
+                    
+                    db_dir = os.path.join(os.getcwd(), 'data') # Changed from e_database to data
+                    os.makedirs(db_dir, exist_ok=True)
+                    file_path = os.path.join(db_dir, 'log_export.txt')
+                    
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                         for l in logs:
+                            f.write(f"{l.datetime.strftime('%Y-%m-%d %H:%M:%S')} [{l.type.upper()}] {l.func}: {l.desc}\n")
+                            
+                    return {
+                        "message": f"Here are the last 100 logs, {user_name}.",
+                        "buttons": buttons,
+                        "document": file_path
+                    }
+                finally:
+                    db.close()
+            except Exception as e:
+                logger.error(f"[handle_command] Get Log Error: {e}")
+                msg = "An error occurred while preparing the logs."
 
         return {"message": msg, "buttons": buttons}
 

@@ -74,13 +74,78 @@ def calc_virtual_leverage(symbol: str, leverage: int) -> str:
         logger.error(f"[calc_virtual_leverage] Error: {e}")
         return str(leverage)
 
-# Wrapper functions for consistency, though callers could use binance_service directly.
-# Keeping them here preserves the logic layer separation (Trade Service vs Adapter).
+from app.core import crud
+from app.core.database import SessionLocal
+
+# Wrapper functions for consistency
 def open_order(symbol: str, side: str, quantity: str, leverage: str) -> bool:
-    return binance_service.open_order(symbol, side, quantity, leverage)
+    try:
+        # 1. Execute on Binance
+        result = binance_service.open_order(symbol, side, quantity, leverage)
+        
+        # 2. Record in DB if successful
+        if result:
+            db = SessionLocal()
+            try:
+                # Need to fetch details for accurate recording, but for now using inputs
+                # Ideally binance_service returns the order object or details
+                # For this refactor phase, we approximate or fetch from binance_service if it returned dict
+                # binance_service.open_order returns bool currently.
+                # We will record the *intent* as open. 
+                # TODO: Update binance_service to return Order info.
+                
+                # Fetch current price for entry estimation
+                m_info = binance_service.get_market_info(symbol)
+                entry_price = float(m_info.get('price', 0)) if m_info else 0.0
+                
+                qty_float = float(quantity)
+                
+                crud.create_order(
+                    db=db,
+                    symbol=symbol,
+                    side=side,
+                    leverage=int(float(leverage)),
+                    quantity_coin=qty_float,
+                    quantity_quote=qty_float * entry_price, # approx
+                    entry_price=entry_price
+                )
+            except Exception as dbe:
+                logger.error(f"[open_order] DB Error: {dbe}")
+            finally:
+                db.close()
+                
+        return result
+    except Exception as e:
+         logger.error(f"[open_order] Error: {e}")
+         return False
 
 def close_order(symbol: str, side: str) -> bool:
-    return binance_service.close_order(symbol, side)
+    try:
+        # 1. Execute on Binance
+        result = binance_service.close_order(symbol, side)
+        
+        # 2. Update DB
+        if result:
+            db = SessionLocal()
+            try:
+                # Fetch price for exit
+                m_info = binance_service.get_market_info(symbol)
+                exit_price = float(m_info.get('price', 0)) if m_info else 0.0
+                
+                # Calculate PnL? 
+                # binance_service doesn't return PnL. 
+                # We can't easily calculate exact PnL without order ID matching.
+                # We will just mark as closed with exit price.
+                crud.close_order(db, symbol, side, exit_price, pnl=0.0)
+            except Exception as dbe:
+                 logger.error(f"[close_order] DB Error: {dbe}")
+            finally:
+                db.close()
+
+        return result
+    except Exception as e:
+        logger.error(f"[close_order] Error: {e}")
+        return False
 
 def execute_trade_logic(symbol: str, side: str) -> bool:
     """

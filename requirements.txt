@@ -21,3 +21,5 @@ cryptography>=41.0.0
 pydantic-settings
 python-dotenv
 SQLAlchemy
+fastapi
+uvicorn[standard]
