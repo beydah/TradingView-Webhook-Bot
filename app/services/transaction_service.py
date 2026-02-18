@@ -14,8 +14,7 @@ from app.services import binance_service
 # Solution: Pass the sender function (callback) to transaction service? 
 # Or use a localized import. Localized import is easier for Refactoring Phase 1.
 
-from d_model import md_c_alerts as alerts_model  # Legacy model, acceptable for Phase 1
-from d_model import md_e_logs as logs_model      # Legacy model (now adapter), good.
+from app.core import crud
 
 # Constants
 MAX_USER_STATES = 1000

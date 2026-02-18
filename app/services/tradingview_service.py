@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.logging import logger
 from app.core import state
 from app.services import trade_service
-from d_model import md_c_alerts as alerts_model
+# from d_model import md_c_alerts as alerts_model # Removed
 
 # Constants
 import time

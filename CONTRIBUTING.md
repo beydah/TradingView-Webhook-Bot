@@ -1,77 +1,58 @@
-# Contributing to the TradingView Webhook Bot
+# Contributing to TradingView Webhook Bot
 
-First off, thank you for considering contributing! This project is open to improvements and bug fixes, and your help is greatly appreciated. By contributing, you can help make this bot even better.
+First off, thank you for considering contributing to this project! It's people like you that make the open-source community such an amazing place to learn, inspire, and create.
 
-This document provides a set of guidelines for contributing to the project. These are mostly guidelines, not strict rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+## 🤝 How Can I Contribute?
 
-## Code of Conduct
+### 1. Reporting Bugs
+Bugs are tracked as GitHub issues. When filing an issue, explain the problem and include additional details to help maintainers reproduce the problem:
+*   Use a clear and descriptive title.
+*   Describe the exact steps which reproduce the problem.
+*   Provide specific examples to demonstrate the steps.
+*   Describe the behavior you observed after following the steps.
 
-This project and everyone participating in it is governed by a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior.
+### 2. Suggesting Enhancements
+Enhancement suggestions are tracked as GitHub issues.
+*   Use a clear and descriptive title.
+*   Provide a step-by-step description of the suggested enhancement.
+*   Explain why this enhancement would be useful.
 
-## How Can I Contribute?
+### 3. Pull Requests
+The process described here has several goals:
+*   Maintain the quality of the product.
+*   Fix problems that are important to users.
+*   Engage the community in working toward the best possible product.
 
-There are several ways you can contribute to this project:
+**Steps to Contribute:**
 
-### Reporting Bugs
-
-If you find a bug, please ensure it hasn't already been reported by searching the GitHub Issues. If you can't find an open issue addressing the problem, please [open a new one](https://github.com/beydah/TradingView-Webhook-Bot/issues/new).
-
-When filing a bug report, please include:
-- A clear and descriptive title.
-- A detailed description of the problem, including what you expected to happen and what actually happened.
-- Steps to reproduce the issue.
-- Any relevant log output or screenshots.
-- Information about your environment (e.g., OS, Python version).
-
-### Suggesting Enhancements
-
-If you have an idea for a new feature or an improvement to an existing one, please [open an issue](https://github.com/beydah/TradingView-Webhook-Bot/issues/new) to discuss it.
-
-When suggesting an enhancement, please include:
-- A clear and descriptive title.
-- A detailed explanation of the proposed enhancement and why it would be beneficial.
-- Any alternative solutions or features you've considered.
-
-### Submitting Pull Requests
-
-If you'd like to contribute code, you can do so by submitting a pull request.
-
-1.  **Fork the repository** on GitHub.
-2.  **Clone your fork** locally:
+1.  **Fork the repo** and create your branch from `main`.
+2.  **Environment Setup**:
     ```bash
-    git clone https://github.com/YOUR_USERNAME/TradingView-Webhook-Bot.git
+    python -m venv venv
+    source venv/bin/activate  # or venv\Scripts\activate on Windows
+    pip install -r requirements.txt
     ```
-3.  **Create a new branch** for your changes:
+3.  **Make your changes**.
+4.  **Test your changes**:
+    Ensure all existing tests pass and add new tests if applicable.
     ```bash
-    git checkout -b feature/my-awesome-feature
+    python -m unittest discover tests
     ```
-    Please use a descriptive branch name (e.g., `fix/telegram-bug`, `feature/add-stop-loss`).
+5.  **Commit your changes** using descriptive commit messages (e.g., `feat: add new signal validator`).
+6.  **Push** to your fork and submit a **Pull Request**.
 
-4.  **Make your changes**. Ensure your code follows the project's coding style (see below).
+## 💻 Coding Standards
 
-5.  **Commit your changes** with a clear and concise commit message:
-    ```bash
-    git commit -m "feat: Add awesome new feature"
-    ```
-    We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+*   **Language**: Python 3.10+
+*   **Style**: We follow [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+*   **Formatting**: Please format your code using `black` before committing.
+*   **Type Hinting**: Use Python type hints for all function arguments and return values.
 
-6.  **Push your changes** to your fork:
-    ```bash
-    git push origin feature/my-awesome-feature
-    ```
-7.  **Open a Pull Request** to the `main` branch of the original repository. Provide a clear title and a detailed description of your changes.
+## 📁 Project Structure
 
-## Pull Request Process
+*   `app/core`: Configuration and Singletons (DB, Logging).
+*   `app/services`: Business logic. Avoid putting API logic here.
+*   `app/api`: FastAPI routers and request models.
+*   `app/models`: SQLAlchemy database models.
 
-1.  Ensure that your PR addresses an existing issue or has been discussed.
-2.  Your PR will be reviewed by a maintainer. They may ask for changes or provide feedback.
-3.  Once your PR is approved, it will be merged into the main codebase.
-
-## Styleguides
-
-### Python Code
-- Please follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide.
-- Use clear and descriptive variable and function names.
-- Add comments to your code where necessary to explain complex logic.
-
-Thank you for your contribution!
+Thank you for your contributions! 🚀
