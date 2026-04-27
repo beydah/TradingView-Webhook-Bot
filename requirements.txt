@@ -6,7 +6,7 @@ binance-futures-connector
 pyTelegramBotAPI==4.14.0
 
 # HTTP Requests
-requests==2.32.4
+requests==2.33.0
 urllib3==2.6.3
 
 # View
