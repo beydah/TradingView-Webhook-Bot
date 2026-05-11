@@ -7,7 +7,7 @@ pyTelegramBotAPI==4.14.0
 
 # HTTP Requests
 requests==2.33.0
-urllib3==2.6.3
+urllib3==2.7.0
 
 # View
 textual==0.79.1
