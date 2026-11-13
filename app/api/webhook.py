@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel
 from typing import Optional
+import math
 from app.core.config import settings
 from app.services import tradingview_service
 from app.core.logging import logger
@@ -26,7 +27,7 @@ async def webhook(payload: WebhookPayload):
         if not tradingview_service.validate_type(payload.alert):
              raise HTTPException(status_code=400, detail="Invalid alert type")
              
-        if payload.price <= 0:
+        if not math.isfinite(payload.price) or payload.price <= 0:
              raise HTTPException(status_code=400, detail="Invalid price")
 
         # Process
